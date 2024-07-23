@@ -11,6 +11,8 @@ lightgbm = "*"
 category-encoders = "*"
 mlflow = "*"
 hyperopt = "*"
+boto3 = "*"
+python-dotenv = "*"
 
 [dev-packages]
 notebook = "*"
