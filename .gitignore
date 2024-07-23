@@ -166,3 +166,4 @@ data/processed
 
 .env
 *.pem
+mlflow.db
