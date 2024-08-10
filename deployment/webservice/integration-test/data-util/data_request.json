@@ -1,0 +1,90 @@
+[{
+    "estado": "PERMANENTE",
+    "categoria": "A46",
+    "profesion": "ABOGADO",
+    "antiguedad_laboral": 10,
+    "nivel":"22",
+    "entidad": "8",
+    "cargo": "PROFESIONAL (I)"
+},
+{
+    "estado": "PERMANENTE",
+    "categoria": "C90",
+    "profesion": "ABOGADO",
+    "antiguedad_laboral": 5,
+    "nivel":"22",
+    "entidad": "9",
+    "cargo": "ASIST. TECNICO ADMINSTRATIVO"
+},
+{
+    "estado": "PERMANENTE",
+    "categoria": "EB3",
+    "profesion": "ABOGADO",
+    "antiguedad_laboral": 6,
+    "nivel":"22",
+    "entidad": "26",
+    "cargo": "AUXILIAR DE SERVICIOS"
+},
+{
+    "estado": "PERMANENTE",
+    "categoria": "E3Y",
+    "profesion": "ABOGADO",
+    "antiguedad_laboral": 8,
+    "nivel":"22",
+    "entidad": "24",
+    "cargo": "TECNICO (II)"
+},
+{
+    "estado": "PERMANENTE",
+    "categoria": "GS9",
+    "profesion": "ABOGADO",
+    "antiguedad_laboral": 3,
+    "nivel":"22",
+    "entidad": "8",
+    "cargo": "CONCEJAL DEPARTAMENTA"
+},
+{
+    "estado": "PERMANENTE",
+    "categoria": "DL3",
+    "profesion": "ABOGADO",
+    "antiguedad_laboral": 7,
+    "nivel":"22",
+    "entidad": "26",
+    "cargo": "CHOFER"
+},
+{
+    "estado": "PERMANENTE",
+    "categoria": "J01",
+    "profesion": "ABOGADO",
+    "antiguedad_laboral": 8,
+    "nivel":"22",
+    "entidad": "24",
+    "cargo": "DIRECTOR"
+},
+{
+    "estado": "PERMANENTE",
+    "categoria": "J03",
+    "profesion": "ABOGADO",
+    "antiguedad_laboral": 8,
+    "nivel":"22",
+    "entidad": "24",
+    "cargo": "CHOFER"
+},
+{
+    "estado": "PERMANENTE",
+    "categoria": "XJ3",
+    "profesion": "ABOGADO",
+    "antiguedad_laboral": 6,
+    "nivel":"22",
+    "entidad": "24",
+    "cargo": "DIRECTOR"
+},
+{
+    "estado": "PERMANENTE",
+    "categoria": "CK2",
+    "profesion": "ABOGADO",
+    "antiguedad_laboral": 2,
+    "nivel":"22",
+    "entidad": "8",
+    "cargo": "GOBERNADOR"
+}]

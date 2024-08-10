@@ -1,0 +1,37 @@
+services:
+  backend:
+    image: salary-prediction-fp-py
+    env_file:
+      - .env_integration_test 
+    ports:
+      - 9696:9696
+    depends_on:
+      - mlflow
+    networks:
+      - app-network
+  mlflow:
+    image: mlflow-aws-rj92
+    env_file:
+      - .env_integration_test 
+    #volumes:
+    #  - ./mlflow_db:/app/mlflow
+    ports:
+      - 5000:5000
+    command: mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root s3://${S3_BUCKET_NAME}/ --host 0.0.0.0
+    depends_on:
+      - localstack
+    networks:
+      - app-network
+  localstack:
+    image: localstack/localstack-pro
+    ports:
+      - 4566:4566
+    env_file:
+      - .env_integration_test 
+    #volumes:
+    #  - ./s3-local-artifacts:/var/lib/localstack
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge

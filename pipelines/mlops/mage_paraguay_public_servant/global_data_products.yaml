@@ -1,0 +1,13 @@
+gdp_data_paraguay_public_servant:
+  object_type: pipeline
+  object_uuid: pl_data_preparation
+  outdated_after:
+    months: null
+    weeks: 2
+  outdated_starting_at:
+    hour_of_day: 16
+  project: mage_paraguay_public_servant
+  repo_path: /home/src/mlops/mage_paraguay_public_servant
+  settings:
+    codificar_datos:
+      partitions: 0
