@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pandas = "*"
+flask = "*"
+marshmallow = "*"
+boto3 = "*"
+mlflow = "*"
+scikit-learn = "*"
+xgboost = "*"
+lightgbm = "*"
+category-encoders = "*"
+python-dotenv = "*"
+setuptools = "*"
+
+[dev-packages]
+requests = "*"
+pytest = "*"
+pytest-mock = "*"
+deepdiff = "*"
+
+[requires]
+python_version = "3.12"

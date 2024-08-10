@@ -163,6 +163,9 @@ cython_debug/
 
 data/raw
 data/processed
+deployment/webservice/artifacts
+deployment/webservice/.env_predict
+deployment/webservice/integration-test/.env_integration_test
 
 .env
 *.pem
