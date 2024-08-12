@@ -28,7 +28,7 @@ repos:
         language: system
         types: [python]
         require_serial: true
-        files: deployment/webservice/
+        files: ./deployment/webservice/
         args: [
             "-rn",
             "-sn",
