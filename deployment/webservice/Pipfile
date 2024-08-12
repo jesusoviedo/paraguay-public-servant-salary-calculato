@@ -23,6 +23,7 @@ pytest-mock = "*"
 deepdiff = "*"
 pylint = "*"
 black = "*"
+isort = "*"
 
 [requires]
 python_version = "3.12"
