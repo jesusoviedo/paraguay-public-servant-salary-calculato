@@ -15,7 +15,9 @@ repos:
     hooks:
     -   id: isort
         name: isort (python)
-        files: deployment/webservice/*
+        args: [
+            "-rc deployment/webservice/"
+        ]
 -   repo: https://github.com/ambv/black
     rev: 24.8.0
     hooks:
