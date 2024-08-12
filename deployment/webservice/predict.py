@@ -81,12 +81,12 @@ def _create_folder(overwrite=False):
     if overwrite and os.path.exists(FOLDER_ARTIFACT):
         shutil.rmtree(FOLDER_ARTIFACT)
         cod_result += 1
-        print(f"Folder artifact delete all successful...")
+        print("Folder artifact delete all successful...")
         
     if not os.path.exists(FOLDER_ARTIFACT):
         os.mkdir(FOLDER_ARTIFACT)
         cod_result += 2
-        print(f"Folder artifact created successful...")
+        print("Folder artifact created successful...")
         
 
     return cod_result
@@ -111,16 +111,16 @@ def _download_artifact(path_prefix):
             filename = key.split('/')[-1]
             local_path = os.path.join(f"./{FOLDER_ARTIFACT}", filename)
             s3.download_file(BUCKET_NAME, key, local_path)
-        print(f"Download successful artifacts...")
+        print("Download successful artifacts...")
 
 
-def _load_artifact(type):
+def _load_artifact(type_artifact):
 
     artifact = file = None
     path = f"./{FOLDER_ARTIFACT}"
-    if type == type_artifact_opcion[0]:
+    if type_artifact == type_artifact_opcion[0]:
         file = os.path.join(path, FILE_MODEL_NAME)
-    elif type == type_artifact_opcion[1]:
+    elif type_artifact == type_artifact_opcion[1]:
         file = os.path.join(path, FILE_ENCODE_NAME)
     
     if file:
@@ -188,8 +188,8 @@ def predict_endpoint():
         return jsonify({"error": "Incorrect data format", "details": err.messages}), 400
     
     except FileNotFoundError as err:
-        return jsonify({"error": "Unexpected error", "details": "files not found"}), 404
-    
+        return jsonify({"error": "Unexpected error", "details": str(err)}), 404
+    # pylint: disable=broad-exception-caught
     except Exception as err:
         return jsonify({"error": "Unexpected error", "details": str(err)}), 500
 
@@ -206,7 +206,7 @@ def setup_model():
 
         result = dict(version_setup = os.environ.get("VERSION_PREDICT")) 
         return jsonify(result)
-    
+    # pylint: disable=broad-exception-caught
     except Exception as err:
         return jsonify({"error": "Unexpected error", "details": str(err)}), 500
 

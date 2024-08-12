@@ -43,6 +43,7 @@ def parse_arg():
     return parser.parse_args()
 
 
+# pylint: disable=invalid-name
 def read_and_split_data():
 
     df_data = pd.read_csv(f'{FOLDER}/{FILE_CSV}')
@@ -52,7 +53,7 @@ def read_and_split_data():
     
     return train_test_split(X_data, y_data, test_size=TEST_PERCENTAGE, random_state=RANDOM_STATE)
 
-
+# pylint: disable=invalid-name
 def train_save_encoder(X_train, X_test, y_train, y_test):
     
     cat_boost_encoder = CatBoostEncoder(cols=CATEGORICAL_FEACTURE)
@@ -113,15 +114,15 @@ def delete_save_encoder():
 def print_ok_task(add_line_blank):
     if add_line_blank:
         print()
-    print(f'{__file__.split("/")[-1]} ---->> {sys.argv[1]} <OK>')
+    print(f'{__file__.split("/", maxsplit=1)[-1]} ---->> {sys.argv[1]} <OK>')
 
 
 def init_mlflow_s3_test_integration():
     
     X_train, X_test, y_train, y_test = read_and_split_data()
     X_train, X_test, encoder_name = train_save_encoder(X_train, X_test, y_train, y_test)
-    id, path = train_save_model(X_train, X_test, y_train, y_test, encoder_name)
-    registre_model(id, path)
+    run_id, path = train_save_model(X_train, X_test, y_train, y_test, encoder_name)
+    registre_model(run_id, path)
     delete_save_encoder()
     print_ok_task(True)
 
@@ -149,16 +150,16 @@ def setup_predict_test_integration():
 
 
     headers = {'Authorization': API_KEY}
-    response = requests.post(url, headers=headers)
+    response = requests.post(url, headers=headers, timeout=10)
     actual_response.append({'status_code': response.status_code})
      
 
     headers['Authorization'] = 'aFsd4Zsd5_'
-    response = requests.post(url, headers=headers)
+    response = requests.post(url, headers=headers, timeout=10)
     actual_response.append({'status_code': response.status_code})
 
 
-    response = requests.post(url)
+    response = requests.post(url, timeout=10)
     actual_response.append({'status_code': response.status_code})
 
     validate_diff(expected_response, actual_response)
@@ -179,11 +180,11 @@ def run_predict_test_integration():
                          (200, 2908317), 
                          (200, 2976702)]
 
-    with open(f'{FOLDER}/{FILE_JSON}', 'r') as archivo_json:
+    with open(f'{FOLDER}/{FILE_JSON}', 'r', encoding="utf-8") as archivo_json:
         array_json = json.load(archivo_json)
 
     for attributes in array_json:
-        response = requests.post(url, json=attributes)
+        response = requests.post(url, json=attributes, timeout=10)
         actual_response.append((response.status_code,response.json().get('salary')))
 
     validate_diff(expected_response, actual_response)

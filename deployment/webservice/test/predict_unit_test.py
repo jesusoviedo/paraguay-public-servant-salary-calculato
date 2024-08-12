@@ -52,8 +52,9 @@ def data_need_test_validate_input():
     return input_valid, input_invalid 
 
 
+# pylint: disable=redefined-outer-name
 @pytest.fixture
-def data_need_test_format_response(data_need_test_validate_input, mocker):
+def data_need_test_format_response(data_need_test_validate_input):
 
     pred = random.randint(2800000, 9750000)
     ver = random.randint(1, 10)
@@ -61,7 +62,7 @@ def data_need_test_format_response(data_need_test_validate_input, mocker):
 
     return pred, ver, attri
 
-
+# pylint: disable=redefined-outer-name
 @pytest.fixture
 def data_need_test_prepare_features(data_need_test_validate_input, mocker):
     
@@ -119,8 +120,9 @@ def data_need_test_download_artifact_with_data(mocker):
         ]}
     ]
 
-    def mock_download_file(Bucket, Key, Filename):
-        with open(Filename, 'w') as f:
+    # pylint: disable=unused-variable, unused-argument
+    def mock_download_file(bucket, Key, filename):
+        with open(filename, 'w', encoding="utf-8") as f:
             pass  
     s3_client_mock.return_value.download_file = mock_download_file
 
@@ -207,18 +209,19 @@ def test_load_artifact_none(data_need_test_load_model):
 
 def test_validate_input_valid(data_need_test_validate_input):
 
-    input, _ = data_need_test_validate_input
-    attributes = _validate_input(input)
+    data_input, _ = data_need_test_validate_input
+    attributes = _validate_input(data_input)
 
-    assert attributes == input
+    assert attributes == data_input
 
 
+# pylint: disable=unused-variable
 def test_validate_input_invalid(data_need_test_validate_input):
     
-    _, input = data_need_test_validate_input
+    _, data_input = data_need_test_validate_input
     expected_result = {'nivel': ['Not a valid string.']}
     with pytest.raises(ValidationError) as exc_info:
-        attributes =_validate_input(input)
+        attributes =_validate_input(data_input)
 
     response = exc_info.value.args[0]
     assert response == expected_result 
@@ -266,7 +269,7 @@ def test_create_folder_overwrite(mocker):
         os.chdir(temp_overwrite)
 
         os.mkdir(FOLDER_ARTIFACT)
-        with open(os.path.join(FOLDER_ARTIFACT, 'same_file.txt'), 'w') as f:
+        with open(os.path.join(FOLDER_ARTIFACT, 'same_file.txt'), 'w', encoding="utf-8") as f:
             f.write('same text')
         result = _create_folder(overwrite=True)
         assert os.path.exists(FOLDER_ARTIFACT)

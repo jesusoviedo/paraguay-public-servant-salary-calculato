@@ -21,6 +21,8 @@ requests = "*"
 pytest = "*"
 pytest-mock = "*"
 deepdiff = "*"
+pylint = "*"
+black = "*"
 
 [requires]
 python_version = "3.12"
