@@ -16,7 +16,7 @@ repos:
     -   id: isort
         name: isort (python)
         args: [
-            "-rc deployment/webservice/"
+            "deployment/webservice/"
         ]
 -   repo: https://github.com/ambv/black
     rev: 24.8.0
