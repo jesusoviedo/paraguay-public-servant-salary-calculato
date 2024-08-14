@@ -1,0 +1,26 @@
+[tool.pylint.messages_control]
+
+disable = [
+    "missing-function-docstring",
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "redefined-outer-name",
+    "unspecified-encoding",
+    "invalid-name",
+    "broad-exception-caught",
+    "duplicate-code",
+    "inconsistent-return-statements",
+    "too-many-arguments",
+    "line-too-long",
+    "unknown-option-value",
+    "possibly-used-before-assignment"
+    ]
+
+[tool.black]
+line-length = 80
+target-version = ['py312']
+
+[tool.isort]
+multi_line_output = 3
+length_sort = true
+force_single_line = true

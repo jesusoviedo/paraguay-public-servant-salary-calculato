@@ -22,23 +22,8 @@ repos:
         language_version: python3.12
 -   repo: local
     hooks:
-    -   id: pylint-deployment
-        name: pylint-deployment
-        entry: pylint
-        language: system
-        types: [python]
-        require_serial: true
-        files: ^deployment/webservice/
-        args: [
-            "-rn",
-            "-sn",
-            "--rcfile",
-            "deployment/webservice/pyproject.toml",
-            "deployment/webservice",
-            "--recursive=y"
-        ]
-    -   id: pylint-utils
-        name: pylint-utils
+    -   id: pylint
+        name: pylint
         entry: pylint
         language: system
         types: [python]
