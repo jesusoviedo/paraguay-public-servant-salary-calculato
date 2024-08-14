@@ -170,3 +170,4 @@ deployment/webservice/integration-test/.env_integration_test
 .env
 *.pem
 mlflow.db
+.vscode/settings.json
