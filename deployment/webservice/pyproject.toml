@@ -3,14 +3,13 @@
 disable = [
     "missing-function-docstring",
     "missing-module-docstring",
-    "missing-final-newline",
     "missing-class-docstring"]
 
 [tool.black]
-line-length = 88
+line-length = 80
 target-version = ['py312']
 
 [tool.isort]
 multi_line_output = 3
 length_sort = true
-group_by_package = true
+force_single_line = true

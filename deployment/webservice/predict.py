@@ -7,8 +7,13 @@ from collections import OrderedDict
 
 import boto3
 import pandas as pd
-from flask import Flask, Response, jsonify, request
-from marshmallow import Schema, ValidationError, fields
+from flask import Flask
+from flask import Response
+from flask import jsonify
+from flask import request
+from marshmallow import Schema
+from marshmallow import ValidationError
+from marshmallow import fields
 from mlflow.tracking.client import MlflowClient
 
 AWS_REGION = os.getenv("AWS_REGION")
@@ -74,7 +79,9 @@ def _search_path_prefix_and_version():
         artifact_path_prefix = latest_version.source
 
         if artifact_path_prefix.startswith("s3://"):
-            artifact_path_prefix = artifact_path_prefix.split(f"{BUCKET_NAME}/")[1]
+            artifact_path_prefix = artifact_path_prefix.split(
+                f"{BUCKET_NAME}/"
+            )[1]
 
     return artifact_path_prefix
 
@@ -100,7 +107,11 @@ def _download_artifact(path_prefix):
     s3 = None
 
     if AWS_ENPOINT_LOCAL:
-        s3 = boto3.client("s3", region_name=AWS_REGION, endpoint_url=AWS_ENPOINT_LOCAL)
+        s3 = boto3.client(
+            "s3",
+            region_name=AWS_REGION,
+            endpoint_url=AWS_ENPOINT_LOCAL,
+        )
     else:
         s3 = boto3.client("s3", region_name=AWS_REGION)
 
@@ -191,8 +202,10 @@ def predict_endpoint():
         return Response(result, mimetype="application/json")
 
     except ValidationError as err:
+
+        respuesta = {"error": "Incorrect data format", "details": err.messages}
         return (
-            jsonify({"error": "Incorrect data format", "details": err.messages}),
+            jsonify(respuesta),
             400,
         )
 

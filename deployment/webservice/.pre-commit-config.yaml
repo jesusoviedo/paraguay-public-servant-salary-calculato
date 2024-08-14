@@ -15,9 +15,6 @@ repos:
     hooks:
     -   id: isort
         name: isort
-        args: [
-            "./deployment/webservice/"
-        ]
 -   repo: https://github.com/ambv/black
     rev: 24.8.0
     hooks:
@@ -31,10 +28,12 @@ repos:
         language: system
         types: [python]
         require_serial: true
-        files: deployment/webservice/
         args: [
             "-rn",
             "-sn",
+            "--rcfile",
+            "deployment/webservice/pyproject.toml",
+            "deployment/webservice",
             "--recursive=y"
         ]
 -   repo: local

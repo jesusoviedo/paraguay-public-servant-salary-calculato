@@ -2,7 +2,7 @@ services:
   backend:
     image: salary-prediction-fp-py
     env_file:
-      - .env_integration_test 
+      - .env_integration_test
     ports:
       - 9696:9696
     depends_on:
@@ -12,7 +12,7 @@ services:
   mlflow:
     image: mlflow-aws-rj92
     env_file:
-      - .env_integration_test 
+      - .env_integration_test
     #volumes:
     #  - ./mlflow_db:/app/mlflow
     ports:
@@ -27,7 +27,7 @@ services:
     ports:
       - 4566:4566
     env_file:
-      - .env_integration_test 
+      - .env_integration_test
     #volumes:
     #  - ./s3-local-artifacts:/var/lib/localstack
     networks:

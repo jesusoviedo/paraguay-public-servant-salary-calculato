@@ -1,3 +1,5 @@
+# pylint: disable=ungrouped-imports
+
 import os
 import sys
 import json
@@ -9,15 +11,12 @@ import mlflow
 import pandas as pd
 import requests
 from deepdiff import DeepDiff
-from sklearn.metrics import (
-    r2_score,
-    mean_squared_error,
-    root_mean_squared_error
-)
+from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import root_mean_squared_error
 from sklearn.ensemble import RandomForestRegressor
 from category_encoders import CatBoostEncoder
 from mlflow.tracking.client import MlflowClient
-# pylint: disable=ungrouped-imports
 from sklearn.model_selection import train_test_split
 
 TASK1 = "init_test_integration"
@@ -50,7 +49,11 @@ API_KEY = os.getenv("API_KEY_CODE_1")
 def parse_arg():
     parser = argparse.ArgumentParser(description="Test integration script")
 
-    parser.add_argument("task", choices=[TASK1, TASK2, TASK3], help="Choose theTask")
+    parser.add_argument(
+        "task",
+        choices=[TASK1, TASK2, TASK3],
+        help="Choose theTask",
+    )
 
     return parser.parse_args()
 
@@ -89,7 +92,11 @@ def train_save_model(X_train, X_test, y_train, y_test, encoder_name):
     path = "test_inte"
 
     with mlflow.start_run() as run:
-        params = {"n_estimators": 50, "max_depth": 10, "random_state": RANDOM_STATE}
+        params = {
+            "n_estimators": 50,
+            "max_depth": 10,
+            "random_state": RANDOM_STATE,
+        }
         random_forest_regressor_model = RandomForestRegressor(**params)
         random_forest_regressor_model.fit(X_train, y_train)
 
@@ -101,8 +108,14 @@ def train_save_model(X_train, X_test, y_train, y_test, encoder_name):
 
         mlflow.log_params(params)
         mlflow.log_metrics(metrics)
-        mlflow.log_artifact(encoder_name, artifact_path=path)
-        mlflow.sklearn.log_model(random_forest_regressor_model, artifact_path=path)
+        mlflow.log_artifact(
+            encoder_name,
+            artifact_path=path,
+        )
+        mlflow.sklearn.log_model(
+            random_forest_regressor_model,
+            artifact_path=path,
+        )
         run_id = run.info.run_id
 
     return run_id, path
@@ -139,8 +152,12 @@ def print_ok_task(add_line_blank):
 def init_mlflow_s3_test_integration():
 
     X_train, X_test, y_train, y_test = read_and_split_data()
-    X_train, X_test, encoder_name = train_save_encoder(X_train, X_test, y_train, y_test)
-    run_id, path = train_save_model(X_train, X_test, y_train, y_test, encoder_name)
+    X_train, X_test, encoder_name = train_save_encoder(
+        X_train, X_test, y_train, y_test
+    )
+    run_id, path = train_save_model(
+        X_train, X_test, y_train, y_test, encoder_name
+    )
     registre_model(run_id, path)
     delete_save_encoder()
     print_ok_task(True)
@@ -205,7 +222,9 @@ def run_predict_test_integration():
 
     for attributes in array_json:
         response = requests.post(url, json=attributes, timeout=10)
-        actual_response.append((response.status_code, response.json().get("salary")))
+        actual_response.append(
+            (response.status_code, response.json().get("salary"))
+        )
 
     validate_diff(expected_response, actual_response)
 

@@ -1,26 +1,33 @@
 #!/usr/bin/env bash
 
-set -a  
-source ./.env_integration_test 
-set +a 
+set -a
+source ./.env_integration_test
+set +a
 
 
 echo "Starting integration test..."
-echo 
+echo
 
 
-for image in salary-prediction-fp-py mlflow-aws-rj92
+if [ -z "$LOCAL_IMAGE_NAME" ]; then
+  docker_images="salary-prediction-fp-py mlflow-aws-rj92 ${LOCAL_IMAGE_NAME}"
+else
+  docker_images="salary-prediction-fp-py mlflow-aws-rj92"
+fi
+
+
+for image in $docker_images
 do
   if ! docker images -q $image | grep -q .; then
     docker build -t $image -f ../Dockerfile.$image .
     sleep 4
-    echo 
+    echo
   fi
 done
 
 
 docker compose up -d
-echo 
+echo
 sleep 4
 
 
@@ -46,7 +53,7 @@ else
         exit 1
     fi
 fi
-echo 
+echo
 sleep 4
 
 
@@ -59,7 +66,7 @@ if [ ${ERROR_CODE} != 0 ]; then
     docker-compose down
     exit ${ERROR_CODE}
 fi
-echo 
+echo
 
 
 task=setup_test_integration
@@ -71,7 +78,7 @@ if [ ${ERROR_CODE} != 0 ]; then
     docker-compose down
     exit ${ERROR_CODE}
 fi
-echo  
+echo
 
 
 task=predict_test_integration

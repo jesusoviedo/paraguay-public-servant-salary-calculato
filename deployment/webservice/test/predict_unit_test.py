@@ -9,21 +9,20 @@ from unittest.mock import MagicMock
 import numpy as np
 import pandas as pd
 import pytest
-from flask import Flask, jsonify
+from flask import Flask
+from flask import jsonify
 from deepdiff import DeepDiff
 from marshmallow import ValidationError
 
-from predict import (
-    _predict,
-    _create_folder,
-    _load_artifact,
-    _validate_input,
-    _format_response,
-    _prepare_features,
-    _requiere_api_key,
-    _download_artifact,
-    _search_path_prefix_and_version
-)
+from predict import _predict
+from predict import _create_folder
+from predict import _load_artifact
+from predict import _validate_input
+from predict import _format_response
+from predict import _prepare_features
+from predict import _requiere_api_key
+from predict import _download_artifact
+from predict import _search_path_prefix_and_version
 
 
 @pytest.fixture
@@ -232,7 +231,7 @@ def test_load_artifact_none(data_need_test_load_model):
 
     _, mock_open = data_need_test_load_model
     loaded_model = _load_artifact("abc")
-    #pylint: disable=singleton-comparison
+    # pylint: disable=singleton-comparison
     assert loaded_model == None
     mock_open.assert_not_called()
 
@@ -374,7 +373,9 @@ def test_download_artifact_with_data(
 
         _download_artifact("test_path")
 
-        s3_mock.return_value.get_paginator.assert_called_once_with("list_objects_v2")
+        s3_mock.return_value.get_paginator.assert_called_once_with(
+            "list_objects_v2"
+        )
         assert os.path.exists(f"{test_folder_download}/model.pkl")
         assert os.path.exists(f"{test_folder_download}/catboost_encoder.pkl")
 
@@ -401,9 +402,13 @@ def test_download_artifact_without_dat(
 
         _download_artifact("test_path")
 
-        s3_mock.return_value.get_paginator.assert_called_once_with("list_objects_v2")
+        s3_mock.return_value.get_paginator.assert_called_once_with(
+            "list_objects_v2"
+        )
         assert not os.path.exists(f"{test_folder_download}/model.pkl")
-        assert not os.path.exists(f"{test_folder_download}/catboost_encoder.pkl")
+        assert not os.path.exists(
+            f"{test_folder_download}/catboost_encoder.pkl"
+        )
 
     os.chdir(original_cwd)
 
@@ -422,7 +427,9 @@ def test_search_path_prefix_and_version_found(
     result = _search_path_prefix_and_version()
 
     mlflow_client_mock.return_value.search_registered_models.assert_called()
-    assert mlflow_client_mock.return_value.search_registered_models.call_count == 2
+    assert (
+        mlflow_client_mock.return_value.search_registered_models.call_count == 2
+    )
     assert not DeepDiff(result, expected_resut)
 
 
@@ -440,7 +447,9 @@ def test_search_path_prefix_and_version_not_found(
     result = _search_path_prefix_and_version()
 
     mlflow_client_mock.return_value.search_registered_models.assert_called()
-    assert mlflow_client_mock.return_value.search_registered_models.call_count == 1
+    assert (
+        mlflow_client_mock.return_value.search_registered_models.call_count == 1
+    )
     assert not DeepDiff(result, expected_resut)
 
 
