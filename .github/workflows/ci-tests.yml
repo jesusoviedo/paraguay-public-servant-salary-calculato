@@ -46,7 +46,7 @@ jobs:
 
       - name: Run Unit tests
         working-directory: "deployment/webservice/"
-        run: pipenv run pytest tests/
+        run: pipenv run pytest test/
 
       - name: Run Pylint
         working-directory: "deployment/webservice/"
