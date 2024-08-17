@@ -53,7 +53,7 @@ jobs:
         run: pipenv run pylint --recursive=y .
 
       - name: Run Integration Test
-        working-directory: 'deployment/webservice/integraton-test'
+        working-directory: 'deployment/webservice/integration-test'
         run: |
           . run.sh
 
