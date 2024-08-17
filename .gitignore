@@ -176,3 +176,7 @@ pipelines/s3-local-artifacts
 deployment/webservice/artifacts
 deployment/webservice/.env_predict
 deployment/webservice/integration-test/.env_integration_test
+
+terraform/script/.ssh/
+terraform/.terraform.lock.hcl
+terraform/.terraform
