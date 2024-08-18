@@ -62,26 +62,26 @@ jobs:
       - name: Create .env_integration_test file
         working-directory: 'deployment/webservice/integration-test'
         run: |
-          echo "ENV=develo" > .env_integration_test
-          echo "AWS_ACCESS_KEY_ID=test" > .env_integration_test
-          echo "AWS_SECRET_ACCESS_KEY=localstack" > .env_integration_test
-          echo "AWS_REGION=us-east-1" > .env_integration_test
-          echo "AWS_ENPOINT_LOCAL=http://localstack:4566" > .env_integration_test
-          echo "MLFLOW_S3_ENDPOINT_URL=http://localhost:4566" > .env_integration_test
-          echo "LOCALSTACK_AUTH_TOKEN=${{ env.LOCALSTACK_AUTH_TOKEN }}" > .env_integration_test
-          echo "S3_BUCKET_NAME=mlflow-bucket-test" > .env_integration_test
-          echo "EXPERIMENT_TRACKING_URI=http://mlflow:5000" > .env_integration_test
-          echo "ARTIFACT_ENCODE_NAME=catboost_encoder.pkl" > .env_integration_test
-          echo "ARTIFACT_MODEL_NAME=model.pkl" > .env_integration_test
-          echo "REGISTERED_MODEL_NAME=ml_regressor_func_pu_test" > .env_integration_test
-          echo "ALIAS_ACTIVE=champion" > .env_integration_test
-          echo "TAG_KEY_REGISTERED_MODEL=current_stage" > .env_integration_test
-          echo "TAG_VALUE_REGISTERED_MODEL_ACTIVE=Production" > .env_integration_test
-          echo "API_KEY_CODE_1=${{ env.API_KEY_CODE_1 }}  " > .env_integration_test
-          echo "API_KEY_USER_1=${{ env.API_KEY_USER_1 }}" > .env_integration_test
-          echo "EXPERIMENT_TRACKING_URI_TEST_INTEGRATION=http://localhost:5000" > .env_integration_test
-          echo "AWS_ENPOINT_LOCAL_TEST_INTEGRATION=http://localhost:4566" > .env_integration_test
-          echo "URL_HOST_PREDICT_TEST_INTEGRATION=http://localhost:9696" > .env_integration_test
+          echo "ENV=develo" >> .env_integration_test
+          echo "AWS_ACCESS_KEY_ID=test" >> .env_integration_test
+          echo "AWS_SECRET_ACCESS_KEY=localstack" >> .env_integration_test
+          echo "AWS_REGION=us-east-1" >> .env_integration_test
+          echo "AWS_ENPOINT_LOCAL=http://localstack:4566" >> .env_integration_test
+          echo "MLFLOW_S3_ENDPOINT_URL=http://localhost:4566" >> .env_integration_test
+          echo "LOCALSTACK_AUTH_TOKEN=${{ env.LOCALSTACK_AUTH_TOKEN }}" >> .env_integration_test
+          echo "S3_BUCKET_NAME=mlflow-bucket-test" >> .env_integration_test
+          echo "EXPERIMENT_TRACKING_URI=http://mlflow:5000" >> .env_integration_test
+          echo "ARTIFACT_ENCODE_NAME=catboost_encoder.pkl" >> .env_integration_test
+          echo "ARTIFACT_MODEL_NAME=model.pkl" >> .env_integration_test
+          echo "REGISTERED_MODEL_NAME=ml_regressor_func_pu_test" >> .env_integration_test
+          echo "ALIAS_ACTIVE=champion" >> .env_integration_test
+          echo "TAG_KEY_REGISTERED_MODEL=current_stage" >> .env_integration_test
+          echo "TAG_VALUE_REGISTERED_MODEL_ACTIVE=Production" >> .env_integration_test
+          echo "API_KEY_CODE_1=${{ env.API_KEY_CODE_1 }}  " >> .env_integration_test
+          echo "API_KEY_USER_1=${{ env.API_KEY_USER_1 }}" >> .env_integration_test
+          echo "EXPERIMENT_TRACKING_URI_TEST_INTEGRATION=http://localhost:5000" >> .env_integration_test
+          echo "AWS_ENPOINT_LOCAL_TEST_INTEGRATION=http://localhost:4566" >> .env_integration_test
+          echo "URL_HOST_PREDICT_TEST_INTEGRATION=http://localhost:9696" >> .env_integration_test
 
       - name: Run Integration Test
         working-directory: 'deployment/webservice/integration-test'
