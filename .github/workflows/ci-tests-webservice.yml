@@ -138,11 +138,17 @@ jobs:
           echo "rds_db_name_mage=\"${{ env.RDS_DB_NAME_MAGE_DEV }}\"" >> dev.tfvars
           echo "s3_bucket_name_mlflow=\"${{ env.S3_BUCKET_NAME_MLFLOW_DEV }}\"" >> dev.tfvars
 
+      - name: Run Terraform init
+        id: tf-init
+        working-directory: 'terraform'
+        if: ${{ steps.tf-s3-backend-create.outcome }} == 'success'
+        run: terraform init -backend-config="key=paraguay-public-servant-dev.tfstate" --reconfigure
+
       - name: Run Terraform plan
         id: tf-plan
         working-directory: 'terraform'
-        if: ${{ steps.tf-s3-backend-create.outcome }} == 'success'
-        run: terraform init -backend-config="key=paraguay-public-servant-dev.tfstate" --reconfigure && terraform plan --var-file vars/dev.tfvars
+        if: ${{ steps.tf-init.outcome }} == 'success'
+        run: terraform plan --var-file vars/dev.tfvars
 
       - name: delete S3 AWS backend for terraform state
         id: tf-s3-backend-delete
