@@ -180,3 +180,5 @@ deployment/webservice/integration-test/.env_integration_test
 terraform/script/.ssh/
 terraform/.terraform.lock.hcl
 terraform/.terraform
+
+utils/.env_utils
