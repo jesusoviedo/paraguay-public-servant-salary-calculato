@@ -11,7 +11,7 @@ terraform {
   backend "s3" {
     bucket  = "tf-state-paraguay-public-servant"
     key     = "paraguay-public-servant-dev.tfstate"
-    region  = "eu-west-1"
+    region  = "us-east-1"
     encrypt = true
   }
 
