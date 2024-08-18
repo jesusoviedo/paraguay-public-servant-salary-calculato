@@ -19,7 +19,7 @@ fi
 for image in $docker_images
 do
   if ! docker images -q $image | grep -q .; then
-    docker build -t $image -f ../Dockerfile.$image .
+    docker build -t $image -f ../Dockerfile.$image ..
     sleep 4
     echo
   fi
