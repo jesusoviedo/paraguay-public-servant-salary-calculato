@@ -10,22 +10,23 @@ env:
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
   RDS_USERNAME_MAGE_DEV: ${{ secrets.RDS_USERNAME_MAGE_DEV }}
-  RDS_PASSWORD_MAGE_DEV: ${{ secrets.RDS_USERNAME_MAGE_DEV }}
+  RDS_PASSWORD_MAGE_DEV: ${{ secrets.RDS_PASSWORD_MAGE_DEV }}
   RDS_USERNAME_MLFLOW_DEV: ${{ secrets.RDS_USERNAME_MLFLOW_DEV }}
   RDS_PASSWORD_MLFLOW_DEV: ${{ secrets.RDS_PASSWORD_MLFLOW_DEV }}
-
   RDS_USERNAME_MAGE_PROD: ${{ secrets.RDS_USERNAME_MAGE_PROD }}
-  RDS_PASSWORD_MAGE_PROD: ${{ secrets.RDS_USERNAME_MAGE_PROD }}
+  RDS_PASSWORD_MAGE_PROD: ${{ secrets.RDS_PASSWORD_MAGE_PROD }}
   RDS_USERNAME_MLFLOW_PROD: ${{ secrets.RDS_USERNAME_MLFLOW_PROD }}
   RDS_PASSWORD_MLFLOW_PROD: ${{ secrets.RDS_PASSWORD_MLFLOW_PROD }}
-
   LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
   API_KEY_CODE_1: ${{ secrets.API_KEY_CODE_1 }}
   API_KEY_USER_1: ${{ secrets.API_KEY_USER_1 }}
 
   TERRAFORM_BACKEND_CONFIG: ${{ vars.TERRAFORM_BACKEND_CONFIG }}
+  RDS_DB_NAME_MLFLOW_DEV: ${{ vars.RDS_DB_NAME_MLFLOW_DEV }}
+  RDS_DB_NAME_MAGE_DEV: ${{ vars.RDS_DB_NAME_MAGE_DEV }}
+  S3_BUCKET_NAME_MLFLOW_DEV: ${{ vars.S3_BUCKET_NAME_MLFLOW_DEV }}
+  
 
 jobs:
   test:
@@ -116,14 +117,37 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Create S3 AWS backend for terraform state
-        id: tf-s3-backend
-        working-directory: "utils/scripts-aws/"
+        id: tf-s3-backend-create
+        working-directory: "utils/scripts"
         run: |
           bucket_name=${{ env.TERRAFORM_BACKEND_CONFIG }}
           pipenv run python aws_s3.py create $bucket_name
 
+      - name: Create dev.tfvars file
+        working-directory: 'terraform/vars'
+        if: ${{ steps.tf-s3-backend-create.outcome }} == 'success'
+        run: |
+          echo "aws_region=${{ env.AWS_DEFAULT_REGION }}" > dev.tfvars
+          echo "aws_access_key=${{ env.AWS_ACCESS_KEY_ID }}" >> dev.tfvars
+          echo "aws_secret_key=${{ env.AWS_SECRET_ACCESS_KEY }}" >> dev.tfvars
+          echo "rds_username_mlflow=${{ env.RDS_USERNAME_MLFLOW_DEV }}" >> dev.tfvars
+          echo "rds_password_mlflow=${{ env.RDS_PASSWORD_MLFLOW_DEV }}" >> dev.tfvars
+          echo "rds_db_name_mlflow=${{ env.RDS_DB_NAME_MLFLOW_DEV }}" >> dev.tfvars
+          echo "rds_username_mage=${{ env.RDS_USERNAME_MAGE_DEV }}" >> dev.tfvars
+          echo "rds_password_mage=${{ env.RDS_PASSWORD_MAGE_DEV }}" >> dev.tfvars
+          echo "rds_db_name_mage=${{ env.RDS_DB_NAME_MAGE_DEV }}" >> dev.tfvars
+          echo "s3_bucket_name_mlflow=${{ env.S3_BUCKET_NAME_MLFLOW_DEV }}" >> dev.tfvars
+
       - name: Run Terraform plan
         id: tf-plan
         working-directory: 'terraform'
-        if: ${{ steps.tf-s3-backend.outcome }} == 'success'
+        if: ${{ steps.tf-s3-backend-create.outcome }} == 'success'
         run: terraform init -backend-config="key=paraguay-public-servant-dev.tfstate" --reconfigure && terraform plan --var-file vars/dev.tfvars
+
+      - name: delete S3 AWS backend for terraform state
+        id: tf-s3-backend-delete
+        working-directory: "utils/scripts"
+        if: ${{ steps.tf-s3-backend-create.outcome }} == 'success'
+        run: |
+          bucket_name=${{ env.TERRAFORM_BACKEND_CONFIG }}
+          pipenv run python aws_s3.py delete $bucket_name
