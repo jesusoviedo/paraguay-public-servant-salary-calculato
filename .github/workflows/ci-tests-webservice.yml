@@ -113,7 +113,7 @@ jobs:
         run: pip install pipenv && pipenv install --dev
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
 
       - name: Create S3 AWS backend for terraform state
         id: tf-s3-backend
