@@ -234,3 +234,10 @@ variable "ecr_docker_image_flask_local_path" {
   type        = string
   description = "ECR docker imagen flask local path"
 }
+
+#project
+variable "project_id" {
+  type        = string
+  description = "Project id"
+  default     = "paraguay-public-servant-salary"
+}
