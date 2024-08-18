@@ -230,10 +230,16 @@ variable "ecr_repo_name" {
   default     = "rj92-aws-docker-repository"
 }
 
+variable "ecr_docker_image_flask_local_path" {
+  type        = string
+  description = "ECR docker imagen flask local path"
+  default     = "./file/flask/Dockerfile"
+}
+
 variable "ecr_image_tag" {
   type        = string
   description = "ECR imagen tag"
-  default     = "latest"
+  default     = "experimental"
 }
 
 #project

@@ -140,6 +140,13 @@ jobs:
           echo "s3_bucket_name_mlflow=\"${{ env.S3_BUCKET_NAME_MLFLOW_DEV }}\"" >> dev.tfvars
           echo "ec2_public_key=\"${{ env.EC2_SSH_PUBLIC_KEY }}\"" >> dev.tfvars
 
+      - name: Copy Dockerfile mlflow-aws-rj92
+        working-directory: 'terraform'
+        if: ${{ steps.tf-s3-backend-create.outcome }} == 'success'
+        run: |
+          mkdir -p file/flask
+          cp ../deployment/webservice/Dockerfile.mlflow-aws-rj92 file/flask/Dockerfile
+
       - name: Run Terraform init
         id: tf-init
         working-directory: 'terraform'
