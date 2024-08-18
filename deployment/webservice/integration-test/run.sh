@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -a
-source ./.env_integration_test
+source .env_integration_test
 set +a
 
 
