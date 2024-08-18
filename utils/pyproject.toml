@@ -13,7 +13,8 @@ disable = [
     "too-many-arguments",
     "line-too-long",
     "unknown-option-value",
-    "possibly-used-before-assignment"
+    "possibly-used-before-assignment",
+    "trailing-whitespace"
     ]
 
 [tool.black]
