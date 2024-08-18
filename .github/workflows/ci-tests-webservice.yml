@@ -43,7 +43,7 @@ jobs:
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: 3.12
 
@@ -104,7 +104,7 @@ jobs:
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: 3.12
 
@@ -119,13 +119,11 @@ jobs:
         id: tf-s3-backend
         working-directory: "utils/scripts-aws/"
         run: |
-          bucket_name=${{ env.TERRAFORM_BACKEND_CONFIG_DEV }}
+          bucket_name=${{ env.TERRAFORM_BACKEND_CONFIG }}
           pipenv run python aws_s3.py create $bucket_name
 
       - name: Run Terraform plan
         id: tf-plan
         working-directory: 'terraform'
         if: ${{ steps.tf-s3-backend.outcome }} == 'success'
-        run: |
-          bucket_name=${{ env.TERRAFORM_BACKEND_CONFIG_DEV }}
-          terraform init -backend-config="key=$bucket_name" --reconfigure && terraform plan --var-file vars/dev.tfvars
+        run: terraform init -backend-config="key=paraguay-public-servant-dev.tfstate" --reconfigure && terraform plan --var-file vars/dev.tfvars
