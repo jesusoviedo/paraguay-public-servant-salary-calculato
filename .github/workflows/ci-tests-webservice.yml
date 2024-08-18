@@ -1,0 +1,128 @@
+name: CI-Tests-Webservice
+on:
+  pull_request:
+    branches:
+      - 'develop'
+    paths:
+      - 'deployment/webservice/**'
+
+env:
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  RDS_USERNAME_MAGE_DEV: ${{ secrets.RDS_USERNAME_MAGE_DEV }}
+  RDS_PASSWORD_MAGE_DEV: ${{ secrets.RDS_USERNAME_MAGE_DEV }}
+  RDS_USERNAME_MLFLOW_DEV: ${{ secrets.RDS_USERNAME_MLFLOW_DEV }}
+  RDS_PASSWORD_MLFLOW_DEV: ${{ secrets.RDS_PASSWORD_MLFLOW_DEV }}
+
+  RDS_USERNAME_MAGE_PROD: ${{ secrets.RDS_USERNAME_MAGE_PROD }}
+  RDS_PASSWORD_MAGE_PROD: ${{ secrets.RDS_USERNAME_MAGE_PROD }}
+  RDS_USERNAME_MLFLOW_PROD: ${{ secrets.RDS_USERNAME_MLFLOW_PROD }}
+  RDS_PASSWORD_MLFLOW_PROD: ${{ secrets.RDS_PASSWORD_MLFLOW_PROD }}
+
+  LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+  API_KEY_CODE_1: ${{ secrets.API_KEY_CODE_1 }}
+  API_KEY_USER_1: ${{ secrets.API_KEY_USER_1 }}
+
+  TERRAFORM_BACKEND_CONFIG_DEV: ${{ vars.TERRAFORM_BACKEND_CONFIG_DEV }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        working-directory: "deployment/webservice/"
+        run: pip install pipenv && pipenv install --dev
+
+      - name: Run Unit tests
+        working-directory: "deployment/webservice/"
+        run: pipenv run pytest test/
+
+      - name: Run Pylint
+        working-directory: "deployment/webservice/"
+        run: pipenv run pylint --recursive=y .
+
+      - name: Create .env_integration_test file
+        working-directory: 'deployment/webservice/integration-test'
+        run: |
+          echo "ENV=develo" > .env_integration_test
+          echo "AWS_ACCESS_KEY_ID=test" > .env_integration_test
+          echo "AWS_SECRET_ACCESS_KEY=localstack" > .env_integration_test
+          echo "AWS_REGION=us-east-1" > .env_integration_test
+          echo "AWS_ENPOINT_LOCAL=http://localstack:4566" > .env_integration_test
+          echo "MLFLOW_S3_ENDPOINT_URL=http://localhost:4566" > .env_integration_test
+          echo "LOCALSTACK_AUTH_TOKEN=${{ env.LOCALSTACK_AUTH_TOKEN }}" > .env_integration_test
+          echo "S3_BUCKET_NAME=mlflow-bucket-test" > .env_integration_test
+          echo "EXPERIMENT_TRACKING_URI=http://mlflow:5000" > .env_integration_test
+          echo "ARTIFACT_ENCODE_NAME=catboost_encoder.pkl" > .env_integration_test
+          echo "ARTIFACT_MODEL_NAME=model.pkl" > .env_integration_test
+          echo "REGISTERED_MODEL_NAME=ml_regressor_func_pu_test" > .env_integration_test
+          echo "ALIAS_ACTIVE=champion" > .env_integration_test
+          echo "TAG_KEY_REGISTERED_MODEL=current_stage" > .env_integration_test
+          echo "TAG_VALUE_REGISTERED_MODEL_ACTIVE=Production" > .env_integration_test
+          echo "API_KEY_CODE_1=${{ env.API_KEY_CODE_1 }}  " > .env_integration_test
+          echo "API_KEY_USER_1=${{ env.API_KEY_USER_1 }}" > .env_integration_test
+          echo "EXPERIMENT_TRACKING_URI_TEST_INTEGRATION=http://localhost:5000" > .env_integration_test
+          echo "AWS_ENPOINT_LOCAL_TEST_INTEGRATION=http://localhost:4566" > .env_integration_test
+          echo "URL_HOST_PREDICT_TEST_INTEGRATION=http://localhost:9696" > .env_integration_test
+
+      - name: Run Integration Test
+        working-directory: 'deployment/webservice/integration-test'
+        run: |
+          . run.sh
+
+  tf-plan:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        working-directory: "utils/scripts-aws/"
+        run: pip install pipenv && pipenv install --dev
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Create S3 AWS backend for terraform state
+        id: tf-s3-backend
+        working-directory: "utils/scripts-aws/"
+        run: pipenv run python aws_s3.py create {{ env.TERRAFORM_BACKEND_CONFIG_DEV }}
+
+      - name: Run Terraform plan
+        id: tf-plan
+        working-directory: 'terraform'
+        if: ${{ steps.tf-s3-backend.outcome }} == 'success'
+        run: |
+          terraform init -backend-config="key=${{ env.TERRAFORM_BACKEND_CONFIG_DEV }}" --reconfigure && terraform plan --var-file vars/prod.tfvars
