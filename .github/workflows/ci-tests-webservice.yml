@@ -118,11 +118,14 @@ jobs:
       - name: Create S3 AWS backend for terraform state
         id: tf-s3-backend
         working-directory: "utils/scripts-aws/"
-        run: pipenv run python aws_s3.py create {{ env.TERRAFORM_BACKEND_CONFIG_DEV }}
+        run: |
+          bucket_name=${{ env.TERRAFORM_BACKEND_CONFIG_DEV }}
+          pipenv run python aws_s3.py create $bucket_name
 
       - name: Run Terraform plan
         id: tf-plan
         working-directory: 'terraform'
         if: ${{ steps.tf-s3-backend.outcome }} == 'success'
         run: |
-          terraform init -backend-config="key=${{ env.TERRAFORM_BACKEND_CONFIG_DEV }}" --reconfigure && terraform plan --var-file vars/prod.tfvars
+          bucket_name=${{ env.TERRAFORM_BACKEND_CONFIG_DEV }}
+          terraform init -backend-config="key=$bucket_name" --reconfigure && terraform plan --var-file vars/dev.tfvars
