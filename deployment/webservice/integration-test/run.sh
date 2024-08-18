@@ -62,8 +62,8 @@ echo "run python -> $task..."
 pipenv run python predit_test.py $task
 ERROR_CODE=$?
 if [ ${ERROR_CODE} != 0 ]; then
-    docker-compose logs
-    docker-compose down
+    docker compose logs
+    docker compose down
     exit ${ERROR_CODE}
 fi
 echo
@@ -74,8 +74,8 @@ echo "run python -> $task..."
 pipenv run python predit_test.py $task
 ERROR_CODE=$?
 if [ ${ERROR_CODE} != 0 ]; then
-    docker-compose logs
-    docker-compose down
+    docker compose logs
+    docker compose down
     exit ${ERROR_CODE}
 fi
 echo
@@ -86,12 +86,12 @@ echo "run python -> $task..."
 pipenv run python predit_test.py $task
 ERROR_CODE=$?
 if [ ${ERROR_CODE} != 0 ]; then
-    docker-compose logs
-    docker-compose down
+    docker compose logs
+    docker compose down
     exit ${ERROR_CODE}
 fi
 echo
 
 
 echo "Completing integration test"
-docker-compose down
+docker compose down
