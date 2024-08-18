@@ -17,9 +17,6 @@ build: quality_checks test
 integration_test: build
 	LOCAL_IMAGE_NAME=${LOCAL_IMAGE_NAME} cd ./integration-test ; ./run.sh
 
-publish: build integration_test
-	LOCAL_IMAGE_NAME=${LOCAL_IMAGE_NAME} scripts/publish.sh
-
 setup:
 	pipenv install --dev
 	pre-commit install
