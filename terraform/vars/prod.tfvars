@@ -15,3 +15,6 @@ rds_db_name_mage                    = env("RDS_DB_NAME_MAGE_PROD")
 
 # Setting up S3 bucket for MLflow
 s3_bucket_name_mlflow               = env("S3_BUCKET_NAME_MLFLOW_PROD")
+
+# Setting up EC2
+ec2_public_key                      = env("EC2_SSH_PUBLIC_KEY")

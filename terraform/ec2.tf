@@ -1,6 +1,6 @@
 resource "aws_key_pair" "key_pair_paraguay_public_servan" {
   key_name   = "key_pair_paraguay_public_servan"
-  public_key = file("script/.ssh/aws-key-par-paraguay-public-servan.pub")
+  public_key = var.ec2_public_key
 }
 
 resource "aws_instance" "mlflow_ec2" {

@@ -19,6 +19,7 @@ env:
   RDS_USERNAME_MLFLOW_PROD: ${{ secrets.RDS_USERNAME_MLFLOW_PROD }}
   RDS_PASSWORD_MLFLOW_PROD: ${{ secrets.RDS_PASSWORD_MLFLOW_PROD }}
   LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+  EC2_SSH_PUBLIC_KEY: ${{ secrets.EC2_SSH_PUBLIC_KEY }}
   API_KEY_CODE_1: ${{ secrets.API_KEY_CODE_1 }}
   API_KEY_USER_1: ${{ secrets.API_KEY_USER_1 }}
 
@@ -137,6 +138,7 @@ jobs:
           echo "rds_password_mage=\"${{ env.RDS_PASSWORD_MAGE_DEV }}\"" >> dev.tfvars
           echo "rds_db_name_mage=\"${{ env.RDS_DB_NAME_MAGE_DEV }}\"" >> dev.tfvars
           echo "s3_bucket_name_mlflow=\"${{ env.S3_BUCKET_NAME_MLFLOW_DEV }}\"" >> dev.tfvars
+          echo "ec2_public_key=\"${{ env.EC2_SSH_PUBLIC_KEY }}\"" >> dev.tfvars
 
       - name: Run Terraform init
         id: tf-init

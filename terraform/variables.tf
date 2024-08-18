@@ -176,6 +176,12 @@ variable "ec2_ssh_port" {
   default     = 22
 }
 
+variable "ec2_public_key" {
+  type        = string
+  description = "EC2 public key"
+  sensitive   = true
+}
+
 #ec2 mlflow variable
 variable "ec2_mlflow_pip_mlflow" {
   type        = string
