@@ -78,7 +78,7 @@ jobs:
           echo "ALIAS_ACTIVE=champion" >> .env_integration_test
           echo "TAG_KEY_REGISTERED_MODEL=current_stage" >> .env_integration_test
           echo "TAG_VALUE_REGISTERED_MODEL_ACTIVE=Production" >> .env_integration_test
-          echo "API_KEY_CODE_1=${{ env.API_KEY_CODE_1 }}  " >> .env_integration_test
+          echo "API_KEY_CODE_1=${{ env.API_KEY_CODE_1 }}" >> .env_integration_test
           echo "API_KEY_USER_1=${{ env.API_KEY_USER_1 }}" >> .env_integration_test
           echo "EXPERIMENT_TRACKING_URI_TEST_INTEGRATION=http://localhost:5000" >> .env_integration_test
           echo "AWS_ENPOINT_LOCAL_TEST_INTEGRATION=http://localhost:4566" >> .env_integration_test
@@ -127,16 +127,16 @@ jobs:
         working-directory: 'terraform/vars'
         if: ${{ steps.tf-s3-backend-create.outcome }} == 'success'
         run: |
-          echo "aws_region=${{ env.AWS_DEFAULT_REGION }}" > dev.tfvars
-          echo "aws_access_key=${{ env.AWS_ACCESS_KEY_ID }}" >> dev.tfvars
-          echo "aws_secret_key=${{ env.AWS_SECRET_ACCESS_KEY }}" >> dev.tfvars
-          echo "rds_username_mlflow=${{ env.RDS_USERNAME_MLFLOW_DEV }}" >> dev.tfvars
-          echo "rds_password_mlflow=${{ env.RDS_PASSWORD_MLFLOW_DEV }}" >> dev.tfvars
-          echo "rds_db_name_mlflow=${{ env.RDS_DB_NAME_MLFLOW_DEV }}" >> dev.tfvars
-          echo "rds_username_mage=${{ env.RDS_USERNAME_MAGE_DEV }}" >> dev.tfvars
-          echo "rds_password_mage=${{ env.RDS_PASSWORD_MAGE_DEV }}" >> dev.tfvars
-          echo "rds_db_name_mage=${{ env.RDS_DB_NAME_MAGE_DEV }}" >> dev.tfvars
-          echo "s3_bucket_name_mlflow=${{ env.S3_BUCKET_NAME_MLFLOW_DEV }}" >> dev.tfvars
+          echo "aws_region=\"${{ env.AWS_DEFAULT_REGION }}\"" > dev.tfvars
+          echo "aws_access_key=\"${{ env.AWS_ACCESS_KEY_ID }}\"" >> dev.tfvars
+          echo "aws_secret_key=\"${{ env.AWS_SECRET_ACCESS_KEY }}\"" >> dev.tfvars
+          echo "rds_username_mlflow=\"${{ env.RDS_USERNAME_MLFLOW_DEV }}\"" >> dev.tfvars
+          echo "rds_password_mlflow=\"${{ env.RDS_PASSWORD_MLFLOW_DEV }}\"" >> dev.tfvars
+          echo "rds_db_name_mlflow=\"${{ env.RDS_DB_NAME_MLFLOW_DEV }}\"" >> dev.tfvars
+          echo "rds_username_mage=\"${{ env.RDS_USERNAME_MAGE_DEV }}\"" >> dev.tfvars
+          echo "rds_password_mage=\"${{ env.RDS_PASSWORD_MAGE_DEV }}\"" >> dev.tfvars
+          echo "rds_db_name_mage=\"${{ env.RDS_DB_NAME_MAGE_DEV }}\"" >> dev.tfvars
+          echo "s3_bucket_name_mlflow=\"${{ env.S3_BUCKET_NAME_MLFLOW_DEV }}\"" >> dev.tfvars
 
       - name: Run Terraform plan
         id: tf-plan
