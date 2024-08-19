@@ -5,6 +5,8 @@ on:
       - 'develop'
     paths:
       - 'deployment/webservice/**'
+      - 'pipelines/**'
+      - 'terraform/**'
 
 env:
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
