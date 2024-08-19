@@ -173,13 +173,31 @@ pipelines/minio-local-artifacts
 pipelines/mlflow_db
 pipelines/s3-local-artifacts
 pipelines/.env.dev
+*.db
+.DS_Store
+.cache/
+.file_versions
+.gitkeep
+.log/
+.logs/
+.mage_temp_profiles
+.preferences.yaml
+.ssh_tunnel
+.variables/
+docker-compose.override.yml
+logs/
+mage_data/
+mlruns/
+secrets/
 
 deployment/webservice/artifacts
 deployment/webservice/.env_predict
 deployment/webservice/integration-test/.env_integration_test
 
 terraform/script/.ssh/
-terraform/.terraform.lock.hcl
+terraform/.terraform.*
 terraform/.terraform
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
 
 utils/.env_utils
