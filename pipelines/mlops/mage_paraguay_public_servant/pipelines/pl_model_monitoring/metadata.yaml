@@ -1,0 +1,132 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: mage_paraguay_public_servant/global_data_products/gdp_data_and_encoder.py
+    global_data_product:
+      uuid: gdp_data_paraguay_public_servant
+  downstream_blocks:
+  - tr_new_data_set
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: gdp_data_and_encoder
+  retry_config: null
+  status: executed
+  timeout: null
+  type: global_data_product
+  upstream_blocks: []
+  uuid: gdp_data_and_encoder
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: mage_paraguay_public_servant/data_loaders/dl_search_new_data_set.py
+    file_source:
+      path: mage_paraguay_public_servant/data_loaders/dl_search_new_data_set.py
+  downstream_blocks:
+  - tr_new_data_set
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: dl_search_new_data_set
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: dl_search_new_data_set
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: mage_paraguay_public_servant/transformers/tr_new_data_set.py
+  downstream_blocks:
+  - cu_se_retrain_model
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: tr_new_data_set
+  retry_config: null
+  status: executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - gdp_data_and_encoder
+  - dl_search_new_data_set
+  uuid: tr_new_data_set
+- all_upstream_blocks_executed: true
+  color: pink
+  configuration:
+    file_source:
+      path: mage_paraguay_public_servant/custom/cu_se_retrain_model.py
+  downstream_blocks:
+  - cu_call_pipeline
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: cu_se_retrain_model
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - tr_new_data_set
+  uuid: cu_se_retrain_model
+- all_upstream_blocks_executed: true
+  color: yellow
+  configuration:
+    file_source:
+      path: mage_paraguay_public_servant/custom/cu_call_pipeline.py
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: cu_call_pipeline
+  retry_config: null
+  status: updated
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - cu_se_retrain_model
+  uuid: cu_call_pipeline
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2024-08-11 01:42:43.639565+00:00'
+data_integration: null
+description: null
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: pl_model_monitoring
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags:
+- monitoring
+type: python
+uuid: pl_model_monitoring
+variables:
+  bucket_name: data-clean-trams
+  early_stopping_rounds: 5
+  features: estado,categoria,profesion,antiguedad_laboral,nivel,entidad,cargo,anho_ingreso
+  features_categorica: estado,categoria,profesion,nivel,entidad,cargo
+  max_evaluations: 10
+  models: linear_model.Lasso,svm.LinearSVR
+  target: presupuestado
+  test_percentage: 0.25
+  verbose_eval: 10
+variables_dir: /home/src/mage_data/mage_paraguay_public_servant
+widgets: []

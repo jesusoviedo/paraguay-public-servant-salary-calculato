@@ -1,0 +1,109 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: mage_paraguay_public_servant/global_data_products/gl_data_set.py
+    global_data_product:
+      uuid: gdp_data_paraguay_public_servant
+  downstream_blocks:
+  - tr_tuning_xgboost_public_servant
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: gl_data_set
+  retry_config: null
+  status: executed
+  timeout: null
+  type: global_data_product
+  upstream_blocks: []
+  uuid: gl_data_set
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: mage_paraguay_public_servant/transformers/tr_tuning_xgboost_public_servant.py
+  downstream_blocks:
+  - de_model_xgboost
+  - cu_dashboard_xgboost
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: tr_tuning_xgboost_public_servant
+  retry_config: null
+  status: executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - gl_data_set
+  uuid: tr_tuning_xgboost_public_servant
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: mage_paraguay_public_servant/data_exporters/de_model_xgboost.py
+  downstream_blocks:
+  - cu_dashboard_xgboost
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: de_model_xgboost
+  retry_config: null
+  status: updated
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - tr_tuning_xgboost_public_servant
+  uuid: de_model_xgboost
+- all_upstream_blocks_executed: false
+  color: null
+  configuration:
+    file_source:
+      path: mage_paraguay_public_servant/custom/cu_dashboard_xgboost.py
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: cu_dashboard_xgboost
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - tr_tuning_xgboost_public_servant
+  - de_model_xgboost
+  uuid: cu_dashboard_xgboost
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2024-07-24 03:50:03.916018+00:00'
+data_integration: null
+description: entrenamiento de modelo xgboost
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: pl_model_training_xgboost_public_servant
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags:
+- model_training
+- xgboost
+type: python
+uuid: pl_model_training_xgboost_public_servant
+variables:
+  early_stopping_rounds: 5
+  max_evaluations: 10
+  verbose_eval: 10
+variables_dir: /home/src/mage_data/mage_paraguay_public_servant
+widgets: []

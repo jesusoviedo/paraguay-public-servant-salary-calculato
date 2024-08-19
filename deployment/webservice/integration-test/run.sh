@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -a
-source ./.env_integration_test
+source .env_integration_test
 set +a
 
 
@@ -19,7 +19,7 @@ fi
 for image in $docker_images
 do
   if ! docker images -q $image | grep -q .; then
-    docker build -t $image -f ../Dockerfile.$image .
+    docker build -t $image -f ../Dockerfile.$image ..
     sleep 4
     echo
   fi
@@ -62,8 +62,8 @@ echo "run python -> $task..."
 pipenv run python predit_test.py $task
 ERROR_CODE=$?
 if [ ${ERROR_CODE} != 0 ]; then
-    docker-compose logs
-    docker-compose down
+    docker compose logs
+    docker compose down
     exit ${ERROR_CODE}
 fi
 echo
@@ -74,8 +74,8 @@ echo "run python -> $task..."
 pipenv run python predit_test.py $task
 ERROR_CODE=$?
 if [ ${ERROR_CODE} != 0 ]; then
-    docker-compose logs
-    docker-compose down
+    docker compose logs
+    docker compose down
     exit ${ERROR_CODE}
 fi
 echo
@@ -86,12 +86,12 @@ echo "run python -> $task..."
 pipenv run python predit_test.py $task
 ERROR_CODE=$?
 if [ ${ERROR_CODE} != 0 ]; then
-    docker-compose logs
-    docker-compose down
+    docker compose logs
+    docker compose down
     exit ${ERROR_CODE}
 fi
 echo
 
 
 echo "Completing integration test"
-docker-compose down
+docker compose down

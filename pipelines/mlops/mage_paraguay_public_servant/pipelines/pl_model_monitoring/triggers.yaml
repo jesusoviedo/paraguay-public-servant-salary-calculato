@@ -1,0 +1,23 @@
+triggers:
+- description: null
+  envs: []
+  last_enabled_at: 2024-08-12 04:35:57.931868+00:00
+  name: tg_monitoring_and_model_training
+  pipeline_uuid: pl_model_monitoring
+  schedule_interval: '@daily'
+  schedule_type: time
+  settings: null
+  sla: null
+  start_time: 2024-08-12 03:30:00+00:00
+  status: active
+  token: ff9df9edd0f94b8a964e4819b407b702
+  variables:
+    bucket_name: data-clean-trams
+    early_stopping_rounds: 5
+    features: estado,categoria,profesion,antiguedad_laboral,nivel,entidad,cargo,anho_ingreso
+    features_categorica: estado,categoria,profesion,nivel,entidad,cargo
+    max_evaluations: 10
+    models: linear_model.Lasso,svm.LinearSVR
+    target: presupuestado
+    test_percentage: 0.25
+    verbose_eval: 10

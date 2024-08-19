@@ -1,0 +1,63 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: blue
+  configuration:
+    file_source:
+      path: mage_paraguay_public_servant/custom/cu_get_better_model.py
+  downstream_blocks:
+  - cu_model_registration
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: cu_get_better_model
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks: []
+  uuid: cu_get_better_model
+- all_upstream_blocks_executed: true
+  color: pink
+  configuration:
+    file_path: mage_paraguay_public_servant/custom/cu_model_registration.py
+    file_source:
+      path: mage_paraguay_public_servant/custom/cu_model_registration.py
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: cu_model_registration
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - cu_get_better_model
+  uuid: cu_model_registration
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2024-07-30 16:30:09.619793+00:00'
+data_integration: null
+description: registro del mejor modelo
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: pl_model_register
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags:
+- model_register
+type: python
+uuid: pl_model_register
+variables_dir: /home/src/mage_data/mage_paraguay_public_servant
+widgets: []

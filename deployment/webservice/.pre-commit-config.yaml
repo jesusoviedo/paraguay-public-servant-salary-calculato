@@ -43,6 +43,7 @@ repos:
         language: system
         types: [python]
         require_serial: true
+        files: ^utils/
         args: [
             "-rn",
             "-sn",

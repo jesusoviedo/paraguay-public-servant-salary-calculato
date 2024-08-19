@@ -1,0 +1,217 @@
+name: CD-Deploy-Webservice
+on:
+  push:
+    branches:
+      - 'develop'
+    paths:
+      - 'deployment/webservice/**'
+
+env:
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  RDS_USERNAME_MAGE_DEV: ${{ secrets.RDS_USERNAME_MAGE_DEV }}
+  RDS_PASSWORD_MAGE_DEV: ${{ secrets.RDS_PASSWORD_MAGE_DEV }}
+  RDS_USERNAME_MLFLOW_DEV: ${{ secrets.RDS_USERNAME_MLFLOW_DEV }}
+  RDS_PASSWORD_MLFLOW_DEV: ${{ secrets.RDS_PASSWORD_MLFLOW_DEV }}
+  RDS_USERNAME_MAGE_PROD: ${{ secrets.RDS_USERNAME_MAGE_PROD }}
+  RDS_PASSWORD_MAGE_PROD: ${{ secrets.RDS_PASSWORD_MAGE_PROD }}
+  RDS_USERNAME_MLFLOW_PROD: ${{ secrets.RDS_USERNAME_MLFLOW_PROD }}
+  RDS_PASSWORD_MLFLOW_PROD: ${{ secrets.RDS_PASSWORD_MLFLOW_PROD }}
+  EC2_SSH_PUBLIC_KEY: ${{ secrets.EC2_SSH_PUBLIC_KEY }}
+  API_KEY_CODE_1: ${{ secrets.API_KEY_CODE_1 }}
+  API_KEY_USER_1: ${{ secrets.API_KEY_USER_1 }}
+
+  TERRAFORM_BACKEND_CONFIG: ${{ vars.TERRAFORM_BACKEND_CONFIG }}
+  RDS_DB_NAME_MLFLOW_DEV: ${{ vars.RDS_DB_NAME_MLFLOW_DEV }}
+  RDS_DB_NAME_MAGE_DEV: ${{ vars.RDS_DB_NAME_MAGE_DEV }}
+  S3_BUCKET_NAME_MLFLOW_DEV: ${{ vars.S3_BUCKET_NAME_MLFLOW_DEV }}
+  ARTIFACT_MODEL_NAME: ${{ vars.ARTIFACT_MODEL_NAME }}
+  ARTIFACT_ENCODE_NAME: ${{ vars.ARTIFACT_ENCODE_NAME }}
+  REGISTERED_MODEL_NAME: ${{ vars.REGISTERED_MODEL_NAME }}
+  ALIAS_ACTIVE: ${{ vars.ALIAS_ACTIVE }}
+  TAG_KEY_REGISTERED_MODEL: ${{ vars.TAG_KEY_REGISTERED_MODEL }}
+  
+
+jobs:
+  define-infrastructure:
+    runs-on: ubuntu-latest
+    steps:
+  
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+            terraform_wrapper: false
+
+      - name: Create S3 AWS backend for terraform state
+        id: tf-s3-backend-create
+        working-directory: "utils/scripts"
+        run: |
+          bucket_name=${{ env.TERRAFORM_BACKEND_CONFIG }}
+          pipenv run python aws_s3.py create $bucket_name
+    
+      - name: Create dev.tfvars file
+        working-directory: 'terraform/vars'
+        if: ${{ steps.tf-s3-backend-create.outcome }} == 'success'
+        run: |
+          echo "aws_region=\"${{ env.AWS_DEFAULT_REGION }}\"" > dev.tfvars
+          echo "aws_access_key=\"${{ env.AWS_ACCESS_KEY_ID }}\"" >> dev.tfvars
+          echo "aws_secret_key=\"${{ env.AWS_SECRET_ACCESS_KEY }}\"" >> dev.tfvars
+          echo "rds_username_mlflow=\"${{ env.RDS_USERNAME_MLFLOW_DEV }}\"" >> dev.tfvars
+          echo "rds_password_mlflow=\"${{ env.RDS_PASSWORD_MLFLOW_DEV }}\"" >> dev.tfvars
+          echo "rds_db_name_mlflow=\"${{ env.RDS_DB_NAME_MLFLOW_DEV }}\"" >> dev.tfvars
+          echo "rds_username_mage=\"${{ env.RDS_USERNAME_MAGE_DEV }}\"" >> dev.tfvars
+          echo "rds_password_mage=\"${{ env.RDS_PASSWORD_MAGE_DEV }}\"" >> dev.tfvars
+          echo "rds_db_name_mage=\"${{ env.RDS_DB_NAME_MAGE_DEV }}\"" >> dev.tfvars
+          echo "s3_bucket_name_mlflow=\"${{ env.S3_BUCKET_NAME_MLFLOW_DEV }}\"" >> dev.tfvars
+          echo "ec2_public_key=\"${{ env.EC2_SSH_PUBLIC_KEY }}\"" >> dev.tfvars
+
+      - name: Copy Dockerfile mlflow-aws-rj92
+        working-directory: 'terraform'
+        if: ${{ steps.tf-s3-backend-create.outcome }} == 'success'
+        run: |
+          mkdir -p file/flask
+          cp ../deployment/webservice/Dockerfile.mlflow-aws-rj92 file/flask/Dockerfile
+
+      - name: Run Terraform init
+        id: tf-init
+        working-directory: 'terraform'
+        if: ${{ steps.tf-s3-backend-create.outcome }} == 'success'
+        run: terraform init -backend-config="key=paraguay-public-servant-dev.tfstate" --reconfigure
+
+      - name: Run Terraform plan
+        id: tf-plan
+        working-directory: 'terraform'
+        if: ${{ steps.tf-init.outcome }} == 'success'
+        run: terraform plan --var-file vars/dev.tfvars
+
+      - name: Run Terraform plan apply
+        id: tf-apply
+        working-directory: 'terraform'
+        if: ${{ steps.tf-plan.outcome }} == 'success'
+        run: |
+          terraform apply -auto-approve -var-file=vars/dev.tfvars
+          echo "::set-output name=aws_account_id::$(terraform output aws_account_id | xargs)"
+          echo "::set-output name=ecr_repo::$(terraform output ecr_repo | xargs)"
+          echo "::set-output name=flask_image_uri::$(terraform output flask_image_uri | xargs)"
+          echo "::set-output name=flask_ec2_public_dns::$(terraform output flask_ec2_public_dns | xargs)"
+          echo "::set-output name=ec2_flask_port::$(terraform output ec2_flask_port | xargs)"
+          echo "::set-output name=mage_ai_ec2_public_dns::$(terraform output mage_ai_ec2_public_dns | xargs)"
+          echo "::set-output name=mlflow_ec2_public_dns::$(terraform output mlflow_ec2_public_dns | xargs)"
+  
+      - name: Set Terraform plan apply Output
+        run: |
+          echo "aws_account_id=${{ steps.tf-apply.outputs.aws_account_id }}" >> $GITHUB_OUTPUT  
+          echo "ecr_repo=${{ steps.tf-apply.outputs.ecr_repo }}" >> $GITHUB_OUTPUT
+          echo "flask_image_uri=${{ steps.tf-apply.outputs.flask_image_uri }}" >> $GITHUB_OUTPUT 
+          echo "flask_ec2_public_dns=${{ steps.tf-apply.outputs.flask_ec2_public_dns }}" >> $GITHUB_OUTPUT 
+          echo "ec2_flask_port=${{ steps.tf-apply.outputs.ec2_flask_port }}" >> $GITHUB_OUTPUT
+          echo "mage_ai_ec2_public_dns=${{ steps.tf-apply.outputs.mage_ai_ec2_public_dns }}" >> $GITHUB_OUTPUT
+          echo "mlflow_ec2_public_dns=${{ steps.tf-apply.outputs.mlflow_ec2_public_dns }}" >> $GITHUB_OUTPUT
+
+  build-push-docker-image:
+    runs-on: ubuntu-latest
+    needs: define-infrastructure
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and push docker image to AWS ECR
+        id: build-image-step
+        working-directory: 'deployment/webservice'
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}  
+          ECR_REPOSITORY: ${{ needs.define-infrastructure.outputs.ecr_repo }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+            docker build -t ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} -f Dockerfile.salary-prediction-fp-py .
+            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            echo "::set-output name=image_uri::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Set Terraform plan apply Output
+        run: echo "ecr_repo=${{ steps.build-image-step.outputs.image_uri }}" >> $GITHUB_OUTPUT 
+
+  update-ec2-flask:
+    runs-on: ubuntu-latest
+    needs: [build-push-docker-image, define-infrastructure]
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Create .env_predict file
+        id: create-file-env_predict
+        working-directory: 'deployment/webservice'
+        run: |
+          echo "ENV=develop" >> .env_predict
+          echo "AWS_ACCESS_KEY_ID=\"${{ env.AWS_ACCESS_KEY_ID }}\"" >> .env_predict
+          echo "AWS_SECRET_ACCESS_KEY=\"${{ env.AWS_SECRET_ACCESS_KEY }}\"" >> .env_predict
+          echo "AWS_REGION=\"${{ env.AWS_DEFAULT_REGION }}\"" >> .env_predict
+          echo "ARTIFACT_MODEL_NAME=\"${{ env.ARTIFACT_MODEL_NAME }}\"" >> .env_predict
+          echo "ARTIFACT_ENCODE_NAME=\"${{ env.ARTIFACT_ENCODE_NAME }}\"" >> .env_predict
+          echo "S3_BUCKET_NAME=\"${{ env.S3_BUCKET_NAME_MLFLOW_DEV }}\"" >> .env_predict
+          echo "API_KEY_CODE_1=\"${{ env.API_KEY_CODE_1 }}\"" >> .env_predict
+          echo "API_KEY_USER_1=\"${{ env.API_KEY_USER_1 }}\"" >> .env_predict
+          echo "REGISTERED_MODEL_NAME=\"${{ env.REGISTERED_MODEL_NAME }}\"" >> .env_predict
+          echo "ALIAS_ACTIVE=\"${{ env.ALIAS_ACTIVE }}\"" >> .env_predict
+          echo "TAG_KEY_REGISTERED_MODEL=\"${{ env.TAG_KEY_REGISTERED_MODEL }}\"" >> .env_predict
+          echo "TAG_VALUE_REGISTERED_MODEL_ACTIVE=\"${{ env.TAG_VALUE_REGISTERED_MODEL_ACTIVE }}\"" >> .env_predict
+          echo "EXPERIMENT_TRACKING_URI=\"${{ needs.define-infrastructure.outputs.mlflow_ec2_public_dns }}:5000\"" >> .env_predict
+
+      - name: Copy file to EC2
+        id: copy-file-env_predict
+        uses: appleboy/scp-action@master
+        if: ${{ steps.create-file-env_predict.outcome }} == 'success'
+        with:
+          host: ${{ needs.define-infrastructure.outputs.flask_ec2_public_dns }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}       
+          source: "deployment/webservice/.env_predict" 
+          target: "/opt"
+
+      - name: Update container in AWS EC2
+        uses: appleboy/ssh-action@master
+        if: ${{ steps.copy-file-env_predict.outcome }} == 'success'
+        with:
+          host: ${{ needs.define-infrastructure.outputs.flask_ec2_public_dns }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}        
+          script: |
+            aws ecr get-login-password --region ${{ env.AWS_DEFAULT_REGION }} | docker login --username AWS --password-stdin ${{ needs.define-infrastructure.outputs.aws_account_id }}.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com
+            docker pull ${{ needs.define-infrastructure.outputs.flask_image_uri }}
+            docker run -d -p ${{ needs.define-infrastructure.outputs.ec2_flask_port }}:${{ needs.define-infrastructure.outputs.ec2_flask_port }} --env-file /opt/.env_predict ${{ needs.define-infrastructure.outputs.flask_image_uri }}
+            
+
+
+
+
+
