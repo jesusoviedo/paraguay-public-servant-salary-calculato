@@ -20,7 +20,7 @@ def codificar_features(
     X_val = None
     y_val = None
     if validation_set is not None:
-        X_val = cat_boost_encoder.transform(validation_set[features], validation_set[target[0]])
+        X_val = cat_boost_encoder.transform(validation_set[features])
         y_val = validation_set[target[0]]
 
     return X_train, y_train, X_val, y_val, cat_boost_encoder

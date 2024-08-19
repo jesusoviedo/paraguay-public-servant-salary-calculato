@@ -1,11 +1,5 @@
 projects:
-  homework_03:
-    path: homework_03
   mage_paraguay_public_servant:
     path: mage_paraguay_public_servant
   rj92_data_preparation:
     path: rj92_data_preparation
-  unit_0_setup: {}
-  unit_1_data_preparation: {}
-  unit_2_training: {}
-  unit_3_observability: {}
