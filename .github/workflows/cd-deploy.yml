@@ -56,6 +56,10 @@ jobs:
         with:
             python-version: 3.12
 
+      - name: Install dependencies
+        working-directory: "utils"
+        run: pip install pipenv && pipenv install --dev
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
