@@ -85,7 +85,8 @@ variable "rds_engine" {
 variable "rds_engine_version" {
   type        = string
   description = "RDS engine version"
-  default     = "13.4"
+  # last version
+  default     = ""
 }
 
 variable "rds_instance_class" {
