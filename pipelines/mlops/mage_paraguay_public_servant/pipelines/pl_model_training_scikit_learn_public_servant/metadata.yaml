@@ -1,0 +1,109 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: mage_paraguay_public_servant/global_data_products/gl_data_set.py
+    global_data_product:
+      uuid: gdp_data_paraguay_public_servant
+  downstream_blocks:
+  - tr_tuning_scikit_learn_public_servant
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: gl_data_set
+  retry_config: null
+  status: executed
+  timeout: null
+  type: global_data_product
+  upstream_blocks: []
+  uuid: gl_data_set
+- all_upstream_blocks_executed: true
+  color: teal
+  configuration:
+    dynamic: true
+    file_source:
+      path: mage_paraguay_public_servant/custom/cu_load_model_scikit_learn.py
+  downstream_blocks:
+  - tr_tuning_scikit_learn_public_servant
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: cu_load_model_scikit_learn
+  retry_config: null
+  status: executed
+  timeout: null
+  type: custom
+  upstream_blocks: []
+  uuid: cu_load_model_scikit_learn
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: mage_paraguay_public_servant/transformers/tr_tuning_scikit_learn_public_servant.py
+    file_source:
+      path: mage_paraguay_public_servant/transformers/tr_tuning_scikit_learn_public_servant.py
+  downstream_blocks:
+  - de_model_scikit_learn
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: tr_tuning_scikit_learn_public_servant
+  retry_config: null
+  status: updated
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - gl_data_set
+  - cu_load_model_scikit_learn
+  uuid: tr_tuning_scikit_learn_public_servant
+- all_upstream_blocks_executed: false
+  color: null
+  configuration:
+    file_path: mage_paraguay_public_servant/data_exporters/de_model_scikit_learn.py
+    file_source:
+      path: mage_paraguay_public_servant/data_exporters/de_model_scikit_learn.py
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: de_model_scikit_learn
+  retry_config: null
+  status: updated
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - tr_tuning_scikit_learn_public_servant
+  uuid: de_model_scikit_learn
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2024-07-24 03:50:03.916018+00:00'
+data_integration: null
+description: entrenamiento de modelo scikit_learn
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: pl_model_training_scikit_learn_public_servant
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags:
+- model_training
+- scikit_learn
+type: python
+uuid: pl_model_training_scikit_learn_public_servant
+variables:
+  max_evaluations: 5
+  models: linear_model.Lasso,svm.LinearSVR
+variables_dir: /home/src/mage_data/mage_paraguay_public_servant
+widgets: []

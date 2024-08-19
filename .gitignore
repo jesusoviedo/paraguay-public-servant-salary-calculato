@@ -172,6 +172,7 @@ data/processed
 pipelines/minio-local-artifacts
 pipelines/mlflow_db
 pipelines/s3-local-artifacts
+pipelines/.env.dev
 
 deployment/webservice/artifacts
 deployment/webservice/.env_predict
