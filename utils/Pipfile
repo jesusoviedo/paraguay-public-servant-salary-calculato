@@ -4,10 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+diagrams = "*"
 
 [dev-packages]
 boto3 = "*"
 python-dotenv = "*"
+diagrams = "*"
 
 [requires]
 python_version = "3.12"
