@@ -48,6 +48,11 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+            python-version: 3.12
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
