@@ -1,4 +1,4 @@
-# Carpeta de Servicio Web `deployment/webservice/`
+# Servicio Web `deployment/webservice/`
 
 La carpeta `deployment/webservice` contiene todos los elementos necesarios para implementar y probar el servicio web basado en Flask que calcula los salarios de empleados públicos. La estructura está organizada para facilitar la configuración, prueba y ejecución del servicio web y sus componentes relacionados.
 

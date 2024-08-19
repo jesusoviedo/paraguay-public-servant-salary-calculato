@@ -1,4 +1,4 @@
-# Carpeta de Análisis de Datos `data/`
+# Análisis de Datos `data/`
 
 Puedes encontrar un ejemplo del archivo de funcionarios públicos (`ejemplo_funcionarios_2024_5.csv.zip`) [aquí](ejemplo_funcionarios_2024_5.csv.zip).
 

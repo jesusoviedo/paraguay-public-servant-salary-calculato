@@ -1,4 +1,4 @@
-# Carpeta de Utilidades `utils/`
+# Utilidades `utils/`
 
 La carpeta `utils` contiene herramientas y scripts útiles para automatizar tareas y configurar la infraestructura del proyecto. Está organizada en dos subcarpetas principales y algunos archivos de configuración.
 
