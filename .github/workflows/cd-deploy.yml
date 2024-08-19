@@ -56,6 +56,10 @@ jobs:
         with:
             python-version: 3.12
 
+      - name: Install dependencies
+        working-directory: "utils"
+        run: pip install pipenv && pipenv install --dev
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -63,7 +67,7 @@ jobs:
 
       - name: Create S3 AWS backend for terraform state
         id: tf-s3-backend-create
-        working-directory: "utils/scripts"
+        working-directory: "utils"
         run: |
           bucket_name=${{ env.TERRAFORM_BACKEND_CONFIG }}
           pipenv run python aws_s3.py create $bucket_name

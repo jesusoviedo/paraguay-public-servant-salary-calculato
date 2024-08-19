@@ -122,7 +122,7 @@ jobs:
 
       - name: Create S3 AWS backend for terraform state
         id: tf-s3-backend-create
-        working-directory: "utils/scripts"
+        working-directory: "utils"
         run: |
           bucket_name=${{ env.TERRAFORM_BACKEND_CONFIG }}
           pipenv run python aws_s3.py create $bucket_name
