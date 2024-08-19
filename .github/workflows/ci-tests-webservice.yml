@@ -111,7 +111,7 @@ jobs:
           python-version: 3.12
 
       - name: Install dependencies
-        working-directory: "utils/scripts-aws/"
+        working-directory: "utils"
         run: pip install pipenv && pipenv install --dev
 
       - name: Setup Terraform
