@@ -1,6 +1,10 @@
 resource "aws_key_pair" "key_pair_paraguay_public_servan" {
   key_name   = "key_pair_paraguay_public_servan"
   public_key = var.ec2_public_key
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_instance" "mlflow_ec2" {

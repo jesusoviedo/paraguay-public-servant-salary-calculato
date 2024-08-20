@@ -17,6 +17,11 @@ resource "aws_iam_role" "mlflow_ec2_role" {
   ]
 }
 EOF
+
+lifecycle {
+    prevent_destroy = true
+}
+
 }
 
 resource "aws_iam_role_policy" "mlflow_ec2_s3_policy" {
@@ -43,6 +48,11 @@ resource "aws_iam_role_policy" "mlflow_ec2_s3_policy" {
   ]
 }
 EOF
+
+lifecycle {
+    prevent_destroy = true
+}
+
 }
 
 resource "aws_iam_instance_profile" "mlflow_ec2_profile" {
@@ -69,6 +79,11 @@ resource "aws_iam_role" "flask_ec2_role" {
   ]
 }
 EOF
+
+lifecycle {
+    prevent_destroy = true
+}
+
 }
 
 resource "aws_iam_role_policy" "flask_ec2_s3_policy" {
@@ -93,6 +108,11 @@ resource "aws_iam_role_policy" "flask_ec2_s3_policy" {
   ]
 }
 EOF
+
+lifecycle {
+    prevent_destroy = true
+}
+
 }
 
 resource "aws_iam_instance_profile" "flask_ec2_profile" {

@@ -9,6 +9,13 @@ resource "aws_security_group" "rds_mlflow_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  lifecycle {
+    ignore_changes = [
+      name,
+      description,
+    ]
+  }
+
 }
 
 resource "aws_security_group" "rds_mage_ai_sg" {
@@ -20,6 +27,13 @@ resource "aws_security_group" "rds_mage_ai_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  lifecycle {
+    ignore_changes = [
+      name,
+      description,
+    ]
   }
 
 }
@@ -49,6 +63,13 @@ resource "aws_security_group" "ec2_mlflow_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  lifecycle {
+    ignore_changes = [
+      name,
+      description,
+    ]
+  }
+
 }
 
 resource "aws_security_group" "ec2_flask_sg" {
@@ -76,6 +97,13 @@ resource "aws_security_group" "ec2_flask_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  lifecycle {
+    ignore_changes = [
+      name,
+      description,
+    ]
   }
 
 }
@@ -111,6 +139,13 @@ resource "aws_security_group" "ec2_mage_ai_sg" {
     to_port     = aws_db_instance.mage_ai_rds.port
     protocol    = "tcp"
     security_groups = [aws_security_group.rds_mage_ai_sg.id]
+  }
+
+  lifecycle {
+    ignore_changes = [
+      name,
+      description,
+    ]
   }
 
 }
