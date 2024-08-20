@@ -121,6 +121,12 @@ jobs:
           echo "::set-output name=mage_ai_ec2_public_dns::$(terraform output mage_ai_ec2_public_dns | xargs)"
           echo "::set-output name=mlflow_ec2_public_dns::$(terraform output mlflow_ec2_public_dns | xargs)"
   
+      - name: Run Terraform destroy if apply fails
+        if: ${{ failure() }}
+        working-directory: 'terraform'
+        run: |
+          terraform destroy -auto-approve -var-file=vars/dev.tfvars
+
       - name: Set Terraform plan apply Output
         run: |
           echo "aws_account_id=${{ steps.tf-apply.outputs.aws_account_id }}" >> $GITHUB_OUTPUT  
