@@ -195,9 +195,13 @@ deployment/webservice/.env_predict
 deployment/webservice/integration-test/.env_integration_test
 
 terraform/script/.ssh/
+terraform/file/*
 terraform/.terraform.*
 terraform/.terraform
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
+terraform/vars/test.tfvars
+terraform/vars/dev.tfvars
+terraform/vars/prod.tfvars
 
 utils/.env_utils
