@@ -23,8 +23,8 @@ Esta carpeta contiene los archivos de configuración de Terraform utilizados par
 ## Carpeta de Variables
 
 - **`vars/`**: Contiene ejemplos de archivos `.tfvars` para diferentes ambientes:
-  - **`dev.tfvars`**: Ejemplo de configuración para el ambiente de desarrollo.
-  - **`prod.tfvars`**: Ejemplo de configuración para el ambiente de producción.
+  - **`example_dev.tfvars`**: Ejemplo de configuración para el ambiente de desarrollo.
+  - **`example_prod.tfvars`**: Ejemplo de configuración para el ambiente de producción.
 
 Para aplicar la configuración de Terraform, asegúrate de haber configurado correctamente los archivos `.tfvars` según el ambiente deseado y utiliza los comandos de Terraform para gestionar la infraestructura.
 
